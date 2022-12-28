@@ -2,14 +2,16 @@ package com.example.googlemap
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
+import android.net.Uri
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -24,6 +26,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.Request
+
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -89,6 +92,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     val urll = getDirectionURL(originLocation, destinationLocation, apiKey)
                     GetDirection(urll).execute()
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(originLocation, 10F))
+
+                    val navigation =
+                        Uri.parse("google.navigation:q=$destinationLatitude,$destinationLongitude")
+                    val navigationIntent = Intent(Intent.ACTION_VIEW, navigation)
+                    navigationIntent.setPackage("com.google.android.apps.maps")
+                    startActivity(navigationIntent)
                 }
 
 
@@ -188,7 +197,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         when (requestCode){
             REQUEST_CODE -> {
